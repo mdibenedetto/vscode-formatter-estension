@@ -14,7 +14,8 @@ export function activate(context: vscode.ExtensionContext) {
             return; // No open text editor
         }
 
-        const REGEX =  /import(.*?){((.|\n)*)}/g;
+        let config = vscode.workspace.getConfiguration('md-tools');
+
         //.replace(/\n/g,'')
 
         let document = editor.document;
@@ -27,13 +28,17 @@ export function activate(context: vscode.ExtensionContext) {
                 console.log("Command should have already finished");
                 console.log(value);
 
-
+                const REGEX = /import(.*?){((.|\n)*)}/g;
+                const REGEX_REMOVE_WHITE_SPACES = /  +/g;
                 var selection = editor.selection;
                 var text = editor.document.getText();
-                let reg =  /import(.*?){((.|\n)*)}/g;
-                var values = reg.exec(text);
-                let newContent = values[0].replace(/\n/g,'')
 
+                let reg = /import(.*?){((.|\n)*)}((.|\n)*);/g;
+                var values = reg.exec(text);
+                //REMOVE NEW LINE
+                let newContent = values[0].replace(/\n/g, ' ');
+                //REMOVE DOUBLE SPACES
+                newContent = newContent.replace(/  +/g, ' ');
                 editor.edit(builder => {
                     builder.replace(range, newContent);
                 })
@@ -60,4 +65,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

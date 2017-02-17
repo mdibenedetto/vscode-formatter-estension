@@ -13,14 +13,24 @@
         "Formatters"
     ],
     "activationEvents": [
-       "*"
+        "*"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
             "command": "MD-Tools.format",
             "title": "MD FORMATTER"
-        }]
+        }],
+        "configuration": {
+            "type": "object",
+            "title": "MD-TOOLS - Beautify Extender config",
+            "properties": {
+                "beautify.extender": {
+                    "type": "object",
+                    "commandName": "HookyQR.beautifyFile"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
