@@ -25,12 +25,9 @@ export function activate(context: vscode.ExtensionContext) {
 
         vscode.commands.executeCommand(commandName, range)
             .then(value => {
-                const REGEX = /import(.*?){((.|\n)*)}/g;
-                const REGEX_REMOVE_WHITE_SPACES = /  +/g;
                 var selection = editor.selection;
                 var text = editor.document.getText();
-
-                let reg = /import(.*?){((.|\n)*)}((.|\n)*);/g;
+                let reg = /import(.*?){((.|\n)*)}((.|\n)*)(from*)(.*?)/g;
                 var values = reg.exec(text);
                 if (values && values.length > 0) {
                     let newValue = values[0].replace(/\n/g, ' '); //REMOVE NEW LINE
