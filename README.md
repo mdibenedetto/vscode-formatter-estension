@@ -1,39 +1,40 @@
 # md-es6-formatter README
 
-This is the README for your extension "md-es6-formatter". After writing up a brief description, we recommend including the following sections.
+This is basic VSCODE estension to fix a limitation of HookyQR.beautify-0.7.3  has when formats a file ES6 or Typescript 
+which contains an instruction "import.....from...;"  
 
-## Features
+Basically my extension calls HookyQR.beautify-0.7.3 or Lonefy (changeable by configuration)
+When the **beautifier** chosen finishes the job I run mine which convert something like 
+ 
+ import { 
+Some1, 
+Some2,
+} from Something ;
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+into 
 
-For example if there is an image subfolder under your extension project workspace:
+import { Some1, Some2 } from Something;
 
-\!\[feature X\]\(images/feature-x.png\)
+for now is  important to finish the instruction with semicolon **;**
+ 
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
+ 
 ## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+HookyQR.beautify-0.7.3 is required since the first the extension does  is to trigger the beuatifier of HookyQR
 
 ## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+The extension uses thi property to recognise which command beautifier need to be triggered. 
+"beautify.commandName": {
+    "type": "string",
+    "default": "HookyQR.beautifyFile"
+}
 
 ## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Is still in beta, be carefull using it
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+Right now the test has made just with HookyQR.beautifyFile
 
 ### 1.0.0
 
@@ -48,18 +49,3 @@ Fixed issue #.
 Added features X, Y, and Z.
 
 -----------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
