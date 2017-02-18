@@ -1,33 +1,30 @@
 'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+
 import * as vscode from 'vscode';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "MD-Tools" is now active!');
 
     let mdFormat = vscode.commands.registerCommand('MD-Tools.format', () => {
+        let config = vscode.workspace.getConfiguration('');
+        let commandName = (config.get('beautify.commandName') || '').toString();
+
         var editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            return; // No open text editor
+        if (!editor || !commandName) {
+            return;
         }
 
-        let config = vscode.workspace.getConfiguration('md-tools');
+        function getRange() {
+            let document = editor.document;
+            var start = new vscode.Position(0, 0);
+            var end = new vscode.Position(document.lineCount - 1, document.lineAt(document.lineCount - 1).text.length);
+            return new vscode.Range(start, end);
+        }
 
-        //.replace(/\n/g,'')
+        var range = getRange();
 
-        let document = editor.document;
-        var start = new vscode.Position(0, 0);
-        var end = new vscode.Position(document.lineCount - 1, document.lineAt(document.lineCount - 1).text.length);
-        var range = new vscode.Range(start, end);
-        // Later...
-        vscode.commands.executeCommand('HookyQR.beautifyFile', range)
+        vscode.commands.executeCommand(commandName, range)
             .then(value => {
-                console.log("Command should have already finished");
-                console.log(value);
-
                 const REGEX = /import(.*?){((.|\n)*)}/g;
                 const REGEX_REMOVE_WHITE_SPACES = /  +/g;
                 var selection = editor.selection;
@@ -35,34 +32,25 @@ export function activate(context: vscode.ExtensionContext) {
 
                 let reg = /import(.*?){((.|\n)*)}((.|\n)*);/g;
                 var values = reg.exec(text);
-                //REMOVE NEW LINE
-                let newContent = values[0].replace(/\n/g, ' ');
-                //REMOVE DOUBLE SPACES
-                newContent = newContent.replace(/  +/g, ' ');
-                editor.edit(builder => {
-                    builder.replace(range, newContent);
-                })
-
+                if (values && values.length > 0) {
+                    let newValue = values[0].replace(/\n/g, ' '); //REMOVE NEW LINE
+                    newValue = newValue.replace(/  +/g, ' '); //REMOVE DOUBLE SPACES
+                    newValue = newValue.replace(/;/g, ';\n'); //PUT A NE LINE AFTER ANY SEMICOLON ";"
+                    newValue = newValue.replace(/ import/g, 'import'); //PUT A NE LINE AFTER ANY SEMICOLON ";"
+                    let newTex = text.replace(values[0], newValue);
+                    var newRange = getRange();
+                    editor.edit(builder => {
+                        builder.replace(newRange, newTex);
+                    })
+                } else {
+                    vscode.window.showInformationMessage('No text to format');
+                }
             }, error => {
                 console.log(error);
             });
-
-        // var selection = editor.selection;
-        // var text = editor.document.getText();
-
-        // let newContent = text.replace('import', 'import;');
-
-        // editor.edit(builder => {
-        //     builder.replace(range, newContent);
-        // })
-        // vscode.window.showInformationMessage('Selected characters: ' + text.length);
     });
-
-
-
-
     context.subscriptions.push(mdFormat);
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() { }
+
+export function deactivate() {}

@@ -25,9 +25,9 @@
             "type": "object",
             "title": "MD-TOOLS - Beautify Extender config",
             "properties": {
-                "beautify.extender": {
-                    "type": "object",
-                    "commandName": "HookyQR.beautifyFile"
+                "beautify.commandName": {
+                    "type": "string",
+                    "default": "HookyQR.beautifyFile"
                 }
             }
         }
